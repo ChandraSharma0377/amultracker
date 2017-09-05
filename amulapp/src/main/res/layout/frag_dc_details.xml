@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lay_bottom"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <View style="@style/ll_seprator_view_style" />
+
+            <LinearLayout style="@style/ll_scan_style">
+
+                <TextView
+                    style="@style/tv_scan_style"
+                    android:text="@string/profit_center" />
+
+
+                <EditText
+                    android:id="@+id/edt_store_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:background="@drawable/redroundconers"
+                    android:inputType="textMultiLine"
+                    android:maxLines="4"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+
+            <View style="@style/ll_seprator_view_style" />
+
+            <LinearLayout style="@style/ll_scan_style">
+
+                <TextView
+                    style="@style/tv_scan_style"
+                    android:text="@string/company_code" />
+
+                <TextView
+                    android:id="@+id/tv_store_location"
+                    style="@style/tv_scan_style" />
+            </LinearLayout>
+
+
+            <View style="@style/ll_seprator_view_style" />
+
+            <LinearLayout style="@style/ll_scan_style">
+
+                <TextView
+                    style="@style/tv_scan_style"
+                    android:text="@string/scan_datetime" />
+
+                <TextView
+                    android:id="@+id/tv_scan_datetime"
+                    style="@style/tv_scan_style" />
+            </LinearLayout>
+
+            <View style="@style/ll_seprator_view_style" />
+
+            <LinearLayout style="@style/ll_scan_style">
+
+                <TextView
+                    style="@style/tv_scan_style"
+                    android:text="@string/gps_coordinate" />
+
+                <TextView
+                    android:id="@+id/tv_gps_coordinate"
+                    style="@style/tv_scan_style" />
+            </LinearLayout>
+
+            <View style="@style/ll_seprator_view_style" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="STORE IMAGE" />
+
+            <ImageView
+                android:id="@+id/iv_one"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:padding="10dp" />
+
+            <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:padding="10dp"-->
+            <!--android:text="ASSET IMAGE 2" />-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/iv_two"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="150dp"-->
+            <!--android:padding="10dp" />-->
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/lay_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:weightSum="1">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight=".03" />
+
+
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".45"
+            android:background="@color/landing_bg"
+            android:text="Add Photo"
+            android:textAllCaps="false" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight=".03" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".45"
+            android:background="@color/yellow"
+            android:text="Save"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight=".03" />
+    </LinearLayout>
+
+</RelativeLayout>
