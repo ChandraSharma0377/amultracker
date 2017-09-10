@@ -37,6 +37,7 @@
     <string name="exit_app">Press back again to exit</string>
     <string name="home">Home</string>
     <string name="history">History</string>
+    <string name="upload">Upload </string>
     <string name="all_transactions">All added stores</string>
     <string name="add_new_dc">Add New DC\'s</string>
 

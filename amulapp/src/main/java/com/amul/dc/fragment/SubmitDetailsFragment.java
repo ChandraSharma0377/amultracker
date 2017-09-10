@@ -19,10 +19,10 @@ import com.amul.dc.R;
 import com.amul.dc.adapters.SubmitDetailsAdapter;
 import com.amul.dc.asynctask.UploadMultipartAsync;
 import com.amul.dc.db.DataHelperClass;
+import com.amul.dc.helper.Commons;
 import com.amul.dc.helper.ShowAlertInformation;
 import com.amul.dc.main.MainActivity;
 import com.amul.dc.pojos.ResponseDto;
-import com.amul.dc.pojos.ScanItemDto;
 import com.amul.dc.pojos.TransactionBeans;
 
 import org.json.JSONObject;
@@ -124,7 +124,7 @@ public class SubmitDetailsFragment extends Fragment implements View.OnClickListe
 		if (temp.size() == 0) {
 			new ShowAlertInformation(getActivity()).showDialog("Error", "Please select data to upload.");
 		} else {
-			//new UploadTask(temp).execute(Commons.SUBMIT_DETAILS);
+			new UploadTask(temp).execute(Commons.ADD_DC_DETAILS);
 			Toast.makeText(getActivity(),"Uploading inProgress...",Toast.LENGTH_LONG).show();
 		}
 
@@ -160,7 +160,7 @@ public class SubmitDetailsFragment extends Fragment implements View.OnClickListe
 
 	private class UploadTask extends UploadMultipartAsync {
 
-		public UploadTask(ArrayList<ScanItemDto> postDataParams) {
+		public UploadTask(ArrayList<TransactionBeans> postDataParams) {
 			super(postDataParams);
 		}
 
@@ -189,8 +189,8 @@ public class SubmitDetailsFragment extends Fragment implements View.OnClickListe
 						ResponseDto rdo = result.get(i);
 						JSONObject jo = new JSONObject(rdo.getStatus());
 						String status = jo.getString("status");
-						String message = jo.getString("message");
-						if (status.equals("1")) {
+						String message = jo.getString("msg");
+						if (status.equals("SUCCESS")) {
 							++successcount;
 							DataHelperClass DHC = new DataHelperClass(getActivity());
 							DHC.deleteRecord(rdo.getUniqueId());
@@ -205,10 +205,10 @@ public class SubmitDetailsFragment extends Fragment implements View.OnClickListe
 			}
 			String msg ="";
 			if(successcount ==result.size())
-				msg="All assets submitted!";
+				msg="All Dc's submitted!";
 			if(successcount <result.size())
-				msg=successcount+" assets out of "+result.size()+" submitted!";
-			new ShowAlertInformation(getActivity()).showDialog("Submit Assets", msg);
+				msg=successcount+" Dc's out of "+result.size()+" submitted!";
+			new ShowAlertInformation(getActivity()).showDialog("Submit Dc's", msg);
 			setListData();
 			cb.setChecked(false);
 			progressDialog.dismiss();
@@ -241,7 +241,7 @@ public class SubmitDetailsFragment extends Fragment implements View.OnClickListe
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 				MainActivity.getMainScreenActivity().replaceFragmentWithBackStack(getActivity(),
-						new DcDetailsFragment(dummy.get(position)), TAG, MainActivity.tabHistory);
+						new DcDetailsFragment(dummy.get(position)), TAG, MainActivity.tabUpload);
 			}
 		});
 

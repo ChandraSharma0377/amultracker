@@ -16,6 +16,13 @@ public class TransactionBeans {
     private byte[] imageTwo;
     private String status;
     private int uniqueId;
+    private String cityId;
+    private String routeId;
+    private String latitude;
+    private String longitude;
+    private String imageUrl;
+
+
 
     public TransactionBeans(Drawable storeThumb, String storeName, String storeLocation) {
         this.storeThumb = storeThumb;
@@ -23,20 +30,6 @@ public class TransactionBeans {
         this.storeLocation = storeLocation;
     }
 
-    public TransactionBeans(Drawable storeThumb, String storeName, String storeLocation,
-                            String scandatetime, boolean isselect, String gpscoordinate,
-                            byte[] imageOne, byte[] imageTwo, String status, int uniqueId) {
-        this.storeThumb = storeThumb;
-        this.storeName = storeName;
-        this.storeLocation = storeLocation;
-        this.scandatetime = scandatetime;
-        this.isselect = isselect;
-        this.gpscoordinate = gpscoordinate;
-        this.imageOne = imageOne;
-        this.imageTwo = imageTwo;
-        this.status = status;
-        this.uniqueId = uniqueId;
-    }
 
     public TransactionBeans() {
 
@@ -122,6 +115,46 @@ public class TransactionBeans {
         this.uniqueId = uniqueId;
     }
 
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(String routeId) {
+        this.routeId = routeId;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("TransactionBeans{");
@@ -135,18 +168,22 @@ public class TransactionBeans {
         if (imageOne == null) sb.append("null");
         else {
             sb.append('[');
-                sb.append("imageOne");
+            sb.append("imageOne");
             sb.append(']');
         }
         sb.append(", imageTwo=");
         if (imageTwo == null) sb.append("null");
         else {
             sb.append('[');
-                sb.append("imageTwo");
+            sb.append("imageTwo");
             sb.append(']');
         }
         sb.append(", status='").append(status).append('\'');
         sb.append(", uniqueId=").append(uniqueId);
+        sb.append(", cityId='").append(cityId).append('\'');
+        sb.append(", routeId='").append(routeId).append('\'');
+        sb.append(", latitude='").append(latitude).append('\'');
+        sb.append(", longitude='").append(longitude).append('\'');
         sb.append('}');
         return sb.toString();
     }

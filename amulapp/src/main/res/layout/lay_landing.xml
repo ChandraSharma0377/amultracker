@@ -1,105 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:card_view="http://schemas.android.com/apk/res-auto"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:layout_gravity="center"
-android:background="@android:color/transparent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:background="@android:color/transparent"
 
-android:orientation="vertical"
-android:paddingLeft="10dp"
-android:paddingRight="10dp">
-
-<LinearLayout
-    android:id="@+id/lay_scan"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="10dp"
-    android:paddingTop="10dp">
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
-    <Spinner
-        android:id="@+id/sp_cities"
+    <LinearLayout
+        android:id="@+id/lay_scan"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="@dimen/select_padding"
-        android:layout_marginRight="@dimen/select_padding"
-        android:background="@drawable/spinner_bg" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
-    <Spinner
-        android:id="@+id/sp_route"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/select_padding"
-        android:layout_marginRight="@dimen/select_padding"
-        android:background="@drawable/spinner_bg" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        card_view:cardCornerRadius="4dp"
-        card_view:cardPreventCornerOverlap="false"
-        card_view:cardUseCompatPadding="true">
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/select_padding"
+            android:layout_marginRight="10dp">
 
-            <RelativeLayout
+            <AutoCompleteTextView
+                android:id="@+id/tv_autoCompleteCity"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/iv_add_city"
+                android:background="@drawable/edt_white_bg"
+                android:hint="Search City"
+                android:maxLength="50"
+                android:maxLines="1"
+                android:paddingLeft="5dp">
 
-                <TextView
-                    android:id="@+id/tv_list_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/general_txt_margin"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:text="@string/all_transactions"
-                    android:textColor="@color/header_color"
-                    android:textSize="@dimen/header_txt_size"
-                    android:textStyle="bold" />
+            </AutoCompleteTextView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/iv_add_dc"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:text="@string/add_new_dc"
-                    android:textColor="@color/header_color"
-                    android:textSize="@dimen/header_txt_size" />
-
-                <ImageView
-                    android:id="@+id/iv_add_dc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/add" />
-
-            </RelativeLayout>
-
-
-            <View style="@style/header_seprator" />
-
-            <ListView
-                android:id="@+id/list_view"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iv_add_city"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_list_title" />
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-</LinearLayout>
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="2dp"
+
+                android:background="@drawable/add_square_40" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/select_padding"
+            android:layout_marginRight="10dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/tv_autoCompleteRoute"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/iv_add_route"
+                android:background="@drawable/edt_white_bg"
+                android:hint="Search Route"
+                android:maxLength="50"
+                android:maxLines="1"
+                android:paddingLeft="5dp">
+
+            </AutoCompleteTextView>
+
+            <ImageView
+                android:id="@+id/iv_add_route"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/add_square_40" />
+        </RelativeLayout>
+        <Spinner
+            android:id="@+id/sp_cities"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/select_padding"
+            android:layout_marginRight="@dimen/select_padding"
+            android:visibility="gone"
+            android:background="@drawable/spinner_bg" />
+
+        <Spinner
+            android:id="@+id/sp_route"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/select_padding"
+            android:layout_marginRight="@dimen/select_padding"
+            android:background="@drawable/spinner_bg" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardPreventCornerOverlap="false"
+            card_view:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_list_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/general_txt_margin"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:text="@string/all_transactions"
+                        android:textColor="@color/header_color"
+                        android:textSize="@dimen/header_txt_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/iv_add_dc"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:text="@string/add_new_dc"
+                        android:textColor="@color/header_color"
+                        android:textSize="@dimen/header_txt_size" />
+
+                    <ImageView
+                        android:id="@+id/iv_add_dc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/add" />
+
+                </RelativeLayout>
+
+
+                <View style="@style/header_seprator" />
+
+                <ListView
+                    android:id="@+id/list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_list_title" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 </RelativeLayout>

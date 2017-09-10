@@ -2,6 +2,7 @@ package com.amul.dc.fragment;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,15 +27,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amul.dc.R;
+import com.amul.dc.adapters.SubmitDetailsAdapter;
+import com.amul.dc.asynctask.UploadMultipartAsync;
 import com.amul.dc.db.DataHelperClass;
+import com.amul.dc.helper.Commons;
 import com.amul.dc.helper.ShowAlertInformation;
 import com.amul.dc.main.MainActivity;
+import com.amul.dc.pojos.ResponseDto;
 import com.amul.dc.pojos.TransactionBeans;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -132,6 +142,12 @@ public class DcDetailsFragment extends Fragment {
 				bitmap_two = BitmapFactory.decodeStream(imageStream1);
 				iv_two.setImageBitmap(bitmap_two);
 			}
+			if(transactionBeansB.getImageOne() == null &&
+					!transactionBeansB.getImageUrl().equals("")
+					){
+				Picasso.with(getActivity()).load(transactionBeansB.getImageUrl()).placeholder(R.drawable.placeholder).
+				into(iv_one);
+			}
 			btn_add.setText("Edit Details");
 			btn_save.setText("Delete Details");
 			//btn_retake.setText("Back");
@@ -181,42 +197,53 @@ public class DcDetailsFragment extends Fragment {
 				if (btn_save.getText().toString().equalsIgnoreCase("Delete Details")) {
 					showDialogDelete();
 				} else {
-                    if (edt_store_name.getText().toString().equals("")) {
-                        Toast.makeText(getActivity(),"Please enter store name",Toast.LENGTH_LONG).show();
-                    }else{
+					if (edt_store_name.getText().toString().equals("")) {
+						Toast.makeText(getActivity(), "Please enter store name", Toast.LENGTH_LONG).show();
+					} else {
 
 						TransactionBeans transactionBeans = new TransactionBeans();
 						transactionBeans.setStoreName(edt_store_name.getText().toString().trim());
 						transactionBeans.setStoreLocation(tv_store_location.getText().toString().trim());
 						transactionBeans.setScandatetime(tv_scan_datetime.getText().toString().trim());
 						transactionBeans.setGpscoordinate(tv_gps_coordinate.getText().toString().trim());
+						transactionBeans.setCityId(HomeFragment.citiesDto.getCityId());
+						transactionBeans.setRouteId(HomeFragment.routesDto.getRouteId());
+						transactionBeans.setLatitude("" + MainActivity.getMainScreenActivity().gps.getLatitude());
+						transactionBeans.setLongitude("" + MainActivity.getMainScreenActivity().gps.getLongitude());
 						transactionBeans.setImageOne(getByte(bitmap_one));
-                    //scanItemDto.setImageTwo(getByte(bitmap_two));
-                    if (null != transactionBeansB)
-						transactionBeans.setUniqueId(transactionBeansB.getUniqueId());
+						//scanItemDto.setImageTwo(getByte(bitmap_two));
+						if (null != transactionBeansB)
+							transactionBeans.setUniqueId(transactionBeansB.getUniqueId());
 
-                    new DataHelperClass(getActivity()).addDcDetails(transactionBeans);
-                    DialogInterface.OnClickListener doc = new OnClickListener() {
+						new DataHelperClass(getActivity()).addDcDetails(transactionBeans);
+						ArrayList<TransactionBeans> temp = new ArrayList<>();
+						temp.add(transactionBeans);
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            MainActivity.getMainScreenActivity().onBackPressed();
-                            dialog.dismiss();
-                        }
-                    };
+						if (MainActivity.getNetworkHelper().isOnline()) {
+							new UploadTask(temp).execute(Commons.ADD_DC_DETAILS);
+						} else {
+							new ShowAlertInformation(getActivity()).showDialog("Network error", getString(R.string.offline));
+						}
+//						DialogInterface.OnClickListener doc = new OnClickListener() {
+//
+//							@Override
+//							public void onClick(DialogInterface dialog, int which) {
+//								MainActivity.getMainScreenActivity().onBackPressed();
+//								dialog.dismiss();
+//							}
+//						};
 
-                    if (null != transactionBeansB) {
-                        new ShowAlertInformation(getActivity()).showDialog(
-                                getActivity().getString(R.string.scan_update_title),
-                                getActivity().getString(R.string.scan_update_msg), doc);
-
-                    } else {
-                        new ShowAlertInformation(getActivity()).showDialog(
-                                getActivity().getString(R.string.scan_save_title),
-                                getActivity().getString(R.string.scan_save_msg), doc);
-
-                    }
-                }
+//						if (null != transactionBeansB) {
+//							new ShowAlertInformation(getActivity()).showDialog(
+//									getActivity().getString(R.string.scan_update_title),
+//									getActivity().getString(R.string.scan_update_msg), doc);
+//
+//						} else {
+//							new ShowAlertInformation(getActivity()).showDialog(
+//									getActivity().getString(R.string.scan_save_title),
+//									getActivity().getString(R.string.scan_save_msg), doc);
+//						}
+					}
 				}
 				break;
 			case R.id.iv_one:
@@ -367,4 +394,93 @@ public class DcDetailsFragment extends Fragment {
 		}
 		return strAdd;
 	}
+
+	private class UploadTask extends UploadMultipartAsync {
+		private ProgressDialog progressDialog;
+		public UploadTask(ArrayList<TransactionBeans> postDataParams) {
+			super(postDataParams);
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			progressDialog = ProgressDialog.show(getActivity(), "", "uploading please wait...");
+			progressDialog.setCancelable(true);
+			progressDialog.setCanceledOnTouchOutside(false);
+			progressDialog.setOnCancelListener(cancelListener);
+		}
+
+		@Override
+		protected ArrayList<ResponseDto> doInBackground(String... params) {
+			return super.doInBackground(params);
+		}
+
+		@Override
+		protected void onPostExecute(ArrayList<ResponseDto> result) {
+			super.onPostExecute(result);
+			String output = "";
+			int successcount=0;
+			if (result.size() > 0) {
+				for (int i = 0; i < result.size(); i++) {
+					try {
+						ResponseDto rdo = result.get(i);
+						JSONObject jo = new JSONObject(rdo.getStatus());
+						String status = jo.getString("status");
+						String message = jo.getString("msg");
+						if (status.equals("SUCCESS")) {
+							++successcount;
+							DataHelperClass DHC = new DataHelperClass(getActivity());
+							DHC.deleteRecord(rdo.getUniqueId());
+						} else {
+
+						}
+						output += "\n" + message;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			String msg ="";
+			if(successcount ==result.size()) {
+				//	msg="Dc's submitted!";
+				//if(successcount <result.size())
+				//	msg="";
+				//new ShowAlertInformation(getActivity()).showDialog("Submit Dc's", msg);
+				DialogInterface.OnClickListener doc = new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						MainActivity.getMainScreenActivity().onBackPressed();
+						dialog.dismiss();
+					}
+				};
+
+				if (null != transactionBeansB) {
+					new ShowAlertInformation(getActivity()).showDialog(
+							getActivity().getString(R.string.scan_update_title),
+							getActivity().getString(R.string.scan_update_msg), doc);
+
+				} else {
+					new ShowAlertInformation(getActivity()).showDialog(
+							getActivity().getString(R.string.scan_save_title),
+							getActivity().getString(R.string.scan_save_msg), doc);
+				}
+			}
+			progressDialog.dismiss();
+		}
+
+		DialogInterface.OnCancelListener cancelListener = new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface arg0) {
+				// if (null != lat) {
+				// lat.cancel(true);
+				// System.out.println("refe" + lat.isCancelled());
+				// lat = null;
+				// // activity.getSupportFragmentManager().popBackStack();
+				// }
+			}
+		};
+	}
+
+
 }

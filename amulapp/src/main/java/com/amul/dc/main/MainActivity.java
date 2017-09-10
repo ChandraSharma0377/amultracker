@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,9 +19,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ import com.amul.dc.fragment.LoginFragment;
 import com.amul.dc.fragment.SubmitDetailsFragment;
 import com.amul.dc.helper.GPSTracker;
 import com.amul.dc.helper.NetworkHelper;
+import com.amul.dc.pojos.CitiesDto;
+import com.amul.dc.pojos.RoutesDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,27 +42,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+public class MainActivity extends ActionBarActivity  {
     private Boolean exit = false;
     private static MainActivity mainActivity;
     private static NetworkHelper networkHelper;
     public static final String MyPREFERENCES = "AppPref";
     private static SharedPreferences sharedpreferences;
     public static String tabHome = "Home";
-    public static String tabHistory = "History";
+    public static String tabUpload = "Upload";
     // Tabs associated with list of fragments
     public Map<String, List<Fragment>> fragmentsStack = new HashMap<String, List<Fragment>>();
     protected Fragment mFrag;
     protected Fragment cFrag, rootFragment;
     private HashMap<String, Stack<Fragment>> mFragmentsStack;
-    public TextView actionBarTitle, tv_home, tv_history;
+    public TextView actionBarTitle;
     public ImageView iv_logout;
-    public LinearLayout lay_bottom;
 
     private final String IS_LOGIN = "IsLoggedIn";
     private final String KEY_EMAIL = "email";
-    private final String KEY_ACTIVE_USER_ID = "userName";
+    private final String KEY_USER_NAME = "userName";
     private final String KEY_USER_ID = "userID";
+
+
+    private final String KEY_CITY_ID = "cityID";
+    private final String KEY_CITY_NAME = "cityName";
+    private final String KEY_ROUTE_ID = "routeID";
+    private final String KEY_ROUTE_NAME = "routeName";
+
     protected static final String CONTENT_TAG = "contenFragments";
     public DBOpenHelperClass dbHandler;
     private int GPS_REQUEST = 55;
@@ -67,6 +76,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private long lastPress;
     private Toast backPressToast;
     private String currentSelectedTabTag = "";
+    private BottomNavigationView bottomNavigationView;
 
     public static MainActivity getMainScreenActivity() {
         return mainActivity;
@@ -94,20 +104,50 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         mFragmentsStack = new HashMap<String, Stack<Fragment>>();
         mFragmentsStack.put(CONTENT_TAG, new Stack<Fragment>());
-        lay_bottom = (LinearLayout) findViewById(R.id.lay_bottom);
-        tv_home = (TextView) findViewById(R.id.tv_home);
-        tv_history = (TextView) findViewById(R.id.tv_history);
 
-        tv_home.setOnClickListener(this);
-        tv_history.setOnClickListener(this);
+        bottomNavigationView = (BottomNavigationView)
+                findViewById(R.id.bottom_navigation);
         ActionBarSetup();
         dbHandler = DBOpenHelperClass.getSharedObject(this);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem item) {
+                        Fragment fragment;
+                        switch (item.getItemId()) {
+                            case R.id.action_home:
+                                setCurrentSelectedTabTag(tabHome);
+                                if (null == fragmentsStack.get(tabHome)) {
+                                    fragment = new HomeFragment();
+                                    createStackForTab(tabHome);
+                                    addFragmentToStack(fragment);
+                                    replaceFragmentWithoutBackStack(R.id.main_fragment, fragment);
+                                } else {
+                                    replaceFragmentWithoutBackStack(R.id.main_fragment, getLastFragment());
+                                }
+                                break;
+                            case R.id.action_upload:
+                                setCurrentSelectedTabTag(tabUpload);
+                                if (null == fragmentsStack.get(tabUpload)) {
+                                    fragment = new SubmitDetailsFragment();
+                                    createStackForTab(tabUpload);
+                                    addFragmentToStack(fragment);
+                                    replaceFragmentWithoutBackStack(R.id.main_fragment, fragment);
+                                } else {
+                                    replaceFragmentWithoutBackStack(R.id.main_fragment, getLastFragment());
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        return true;
+                    }
+                });
         if (isLoggedIn()) {
             //changeNavigationContentFragment(new HomeFragment(), false);
-            onClick(tv_home);
+            selectTabs(true);
         } else
             changeNavigationContentFragment(new LoginFragment(), false);
-
         onNewIntent(getIntent());
 
     }
@@ -115,14 +155,24 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     public void showHideBottomLay(boolean isVisible) {
         if (isVisible) {
-            lay_bottom.setVisibility(View.VISIBLE);
+           // lay_bottom.setVisibility(View.VISIBLE);
+            bottomNavigationView.setVisibility(View.VISIBLE);
             iv_logout.setVisibility(View.VISIBLE);
         } else {
-            lay_bottom.setVisibility(View.GONE);
+           // lay_bottom.setVisibility(View.GONE);
+            bottomNavigationView.setVisibility(View.GONE);
             iv_logout.setVisibility(View.GONE);
         }
     }
 
+    public void selectTabs(boolean isHomeSelected) {
+//        if (isHomeSelected)
+//            bottomNavigationView.setSelectedItemId(R.id.action_home);
+//        else
+//            bottomNavigationView.setSelectedItemId(R.id.action_upload);
+        View view = bottomNavigationView.findViewById(R.id.action_home);
+        view.performClick();
+    }
     private void ActionBarSetup() {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -134,7 +184,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         actionBarTitle = (TextView) v.findViewById(R.id.title);
         iv_logout = (ImageView) v.findViewById(R.id.iv_logout);
-        iv_logout.setOnClickListener(this);
+        iv_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(mainActivity).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Logout")
+                        .setMessage("Are you sure you want to logout?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                MainActivity.getSharePreferance().edit().clear().commit();
+                                MainActivity.getMainScreenActivity().restartActivity();
+                            }
+                        }).setNegativeButton("No", null).show();
+            }
+        });
         Toolbar parent = (Toolbar) v.getParent();
         parent.setContentInsetsAbsolute(0, 0);
         // actionBarTitle.setText(getString(R.string.app_name));
@@ -182,7 +245,42 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     public String getActiveUserID() {
-        return sharedpreferences.getString(KEY_ACTIVE_USER_ID, "");
+        return sharedpreferences.getString(KEY_USER_NAME, "");
+    }
+
+    public CitiesDto getPrefCityDto(){
+        CitiesDto citiesDto = null;
+        String cityID = sharedpreferences.getString(KEY_CITY_ID, "");
+        if(!cityID.equals("")){
+            citiesDto = new CitiesDto();
+            citiesDto.setCityId(cityID);
+            citiesDto.setCityName(sharedpreferences.getString(KEY_CITY_NAME, ""));
+        }
+        return citiesDto;
+    }
+    public RoutesDto getPrefRouteDto(){
+        RoutesDto routesDto = null;
+        String routeID = sharedpreferences.getString(KEY_ROUTE_ID, "");
+        if(!routeID.equals("")){
+            routesDto = new RoutesDto();
+            routesDto.setRouteId(routeID);
+            routesDto.setRouteName(sharedpreferences.getString(KEY_ROUTE_NAME, ""));
+        }
+        return routesDto;
+    }
+
+    public void setPrefRouteDto(RoutesDto routesDto){
+        Editor editor = sharedpreferences.edit();
+        editor.putString(KEY_ROUTE_ID, routesDto.getRouteId());
+        editor.putString(KEY_ROUTE_NAME, routesDto.getRouteName());
+        editor.commit();
+    }
+
+    public void setPrefCityDto(CitiesDto cityDto){
+        Editor editor = sharedpreferences.edit();
+        editor.putString(KEY_CITY_ID, cityDto.getCityId());
+        editor.putString(KEY_CITY_NAME, cityDto.getCityName());
+        editor.commit();
     }
 
     public String getUserID() {
@@ -193,9 +291,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return sharedpreferences.getBoolean(IS_LOGIN, false);
     }
 
-    public void setSharPreferancename(String act_user_id, String userID, String mobileNo, boolean isLogin) {
+    public void setSharPreferancename(String user_name, String userID, String mobileNo, boolean isLogin) {
         Editor editor = sharedpreferences.edit();
-        editor.putString(KEY_ACTIVE_USER_ID, act_user_id);
+        editor.putString(KEY_USER_NAME, user_name);
         editor.putString(KEY_USER_ID, userID);
         editor.putString(KEY_EMAIL, mobileNo);
         editor.putBoolean(IS_LOGIN, isLogin);
@@ -206,6 +304,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void replaceFragmentWithBackStack(FragmentActivity activity,  Fragment fragment, String tag, String selectedTab) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations( R.anim.enter_from_right, R.anim.exit_to_left,R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.main_fragment, fragment, tag).addToBackStack(tag).commitAllowingStateLoss();
         // Added to maintaining the stack
         setCurrentSelectedTabTag(selectedTab);
@@ -283,51 +382,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        Fragment fragment;
 
-        switch (id) {
-            case R.id.tv_home:
-                setCurrentSelectedTabTag(tabHome);
-                if (null == fragmentsStack.get(tabHome)) {
-                    fragment = new HomeFragment();
-                    createStackForTab(tabHome);
-                    addFragmentToStack(fragment);
-                    replaceFragmentWithoutBackStack(R.id.main_fragment, fragment);
-                } else {
-                    replaceFragmentWithoutBackStack(R.id.main_fragment, getLastFragment());
-                }
-                break;
-            case R.id.tv_history:
-                setCurrentSelectedTabTag(tabHistory);
-                if (null == fragmentsStack.get(tabHistory)) {
-                    fragment = new SubmitDetailsFragment();
-                    createStackForTab(tabHistory);
-                    addFragmentToStack(fragment);
-                    replaceFragmentWithoutBackStack(R.id.main_fragment, fragment);
-                } else {
-                    replaceFragmentWithoutBackStack(R.id.main_fragment, getLastFragment());
-                }
-                break;
-
-            case R.id.iv_logout:
-
-                new AlertDialog.Builder(mainActivity).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Logout")
-                        .setMessage("Are you sure you want to logout?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                MainActivity.getSharePreferance().edit().clear().commit();
-                                MainActivity.getMainScreenActivity().restartActivity();
-                            }
-                        }).setNegativeButton("No", null).show();
-                break;
-            default:
-                break;
-        }
-    }
 
     public void replaceFragmentWithoutBackStack(int container, Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -377,7 +432,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             // if it is not first screen then
             // current screen is closed and removed from Back Stack and shown the previous one
             Fragment fragment = currentTabFragments.get(size - 2);
-            Fragment currentFragment = currentTabFragments.get(size - 1);
             currentTabFragments.remove(size - 1);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.main_fragment, fragment);
@@ -392,7 +446,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 if (backPressToast != null) {
                     backPressToast.cancel();
                 }
-                super.onBackPressed();
+               // super.onBackPressed();
+                finish();
             }
         }
     }

@@ -30,6 +30,12 @@ public class DataHelperClass {
 				values.put(DBOHC.COLUMN_STORE_LOCATION, transactionBeans.getStoreLocation());
 				values.put(DBOHC.COLUMN_SCAN_DATE_TIME, transactionBeans.getScandatetime());
 				values.put(DBOHC.COLUMN_GPS_COORDINATE, transactionBeans.getGpscoordinate());
+
+				values.put(DBOHC.COLUMN_CITY_ID, transactionBeans.getCityId());
+				values.put(DBOHC.COLUMN_ROUTE_ID, transactionBeans.getRouteId());
+				values.put(DBOHC.COLUMN_LATITUDE, transactionBeans.getLatitude());
+				values.put(DBOHC.COLUMN_LONGITUDE, transactionBeans.getLongitude());
+
 				values.put(DBOHC.COLUMN_STATUS, "Pending");
 				values.put(DBOHC.COLUMN_ADDITIONAL_1, "");
 				values.put(DBOHC.COLUMN_ADDITIONAL_2, "");
@@ -67,9 +73,13 @@ public class DataHelperClass {
 								transactionBeans.setStoreLocation(cursor.getString(2));
 								transactionBeans.setScandatetime(cursor.getString(3));
 								transactionBeans.setGpscoordinate(cursor.getString(4));
-								transactionBeans.setImageOne(cursor.getBlob(5));
-								transactionBeans.setImageTwo(cursor.getBlob(6));
-								transactionBeans.setStatus(cursor.getString(7));
+								transactionBeans.setCityId(cursor.getString(5));
+								transactionBeans.setRouteId(cursor.getString(6));
+								transactionBeans.setLatitude(cursor.getString(7));
+								transactionBeans.setLongitude(cursor.getString(8));
+								transactionBeans.setImageOne(cursor.getBlob(9));
+								transactionBeans.setImageTwo(cursor.getBlob(10));
+								transactionBeans.setStatus(cursor.getString(11));
 								scanList.add(transactionBeans);
 							} catch (Exception e) {
 								Log.d("DB_EXCEPTION" + "OBJ_NOT : ", e.getMessage());

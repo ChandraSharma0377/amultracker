@@ -23,7 +23,10 @@ public class DBOpenHelperClass extends SQLiteOpenHelper {
     public final String COLUMN_STORE_LOCATION = "STORE_LOCATION";
     public final String COLUMN_SCAN_DATE_TIME = "SCAN_DATE_TIME";
     public final String COLUMN_GPS_COORDINATE = "GPS_COORDINATE";
-
+    public final String COLUMN_CITY_ID = "CITY_ID";
+    public final String COLUMN_ROUTE_ID = "ROUTE_ID";
+    public final String COLUMN_LATITUDE = "LATITUDE";
+    public final String COLUMN_LONGITUDE = "LONGITUDE";
 
     public final String COLUMN_IMAGE_1 = "IMAGE_1";
     public final String COLUMN_IMAGE_2 = "IMAGE_2";
@@ -40,6 +43,12 @@ public class DBOpenHelperClass extends SQLiteOpenHelper {
             + COLUMN_STORE_LOCATION + TEXT_TYPE + COMMA_SEP
             + COLUMN_SCAN_DATE_TIME + TEXT_TYPE + COMMA_SEP
             + COLUMN_GPS_COORDINATE + TEXT_TYPE + COMMA_SEP
+
+            + COLUMN_CITY_ID + TEXT_TYPE + COMMA_SEP
+            + COLUMN_ROUTE_ID + TEXT_TYPE + COMMA_SEP
+            + COLUMN_LATITUDE + TEXT_TYPE + COMMA_SEP
+            + COLUMN_LONGITUDE + TEXT_TYPE + COMMA_SEP
+
             + COLUMN_IMAGE_1 + " BLOB" + COMMA_SEP
             + COLUMN_IMAGE_2 + " BLOB" + COMMA_SEP
             + COLUMN_STATUS + TEXT_TYPE + COMMA_SEP

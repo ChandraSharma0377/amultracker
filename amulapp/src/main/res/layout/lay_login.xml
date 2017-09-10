@@ -36,31 +36,26 @@
         <EditText
             android:id="@+id/edt_email"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_below="@+id/tv_title"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:background="@drawable/edt_white_bg"
-            android:hint="User ID"
-            android:inputType="text"
+            android:hint="Email ID"
+            android:inputType="textEmailAddress"
             android:maxLength="50"
             android:maxLines="1"
             android:paddingBottom="2dp"
             android:paddingLeft="5dp"
             android:paddingTop="2dp"
             android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/black" />
+            android:textColor="@android:color/black" />
 
         <EditText
             android:id="@+id/edt_pwd"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_below="@+id/edt_email"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:background="@drawable/edt_white_bg"
             android:hint="PASSWORD "
             android:inputType="textPassword"
@@ -70,8 +65,7 @@
             android:paddingLeft="5dp"
             android:paddingTop="2dp"
             android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/black" />
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/btn_login"

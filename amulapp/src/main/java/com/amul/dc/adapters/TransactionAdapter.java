@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.amul.dc.R;
 import com.amul.dc.pojos.TransactionBeans;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -63,13 +64,7 @@ public class TransactionAdapter extends BaseAdapter {
         }
         holder.tvheader.setText(arraylist.get(position).getStoreName());
         holder.tvsubheader.setText(arraylist.get(position).getStoreLocation());
-        if(null !=arraylist.get(position).getImageOne()) {
-            ByteArrayInputStream imageStream = new ByteArrayInputStream(arraylist.get(position).getImageOne());
-            Bitmap bitmap_one = BitmapFactory.decodeStream(imageStream);
-            holder.ivthumb.setImageBitmap(bitmap_one);
-        }
-        else
-            holder.ivthumb.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.store));
+        Picasso.with(context).load(arraylist.get(position).getImageUrl()).placeholder(R.drawable.placeholder).resize(140, 140).into(holder.ivthumb);
         return convertView;
     }
 

@@ -16,6 +16,7 @@ import android.widget.EditText;
 
 import com.amul.dc.R;
 import com.amul.dc.asynctask.AsyncProcess;
+import com.amul.dc.helper.Commons;
 import com.amul.dc.helper.ShowAlertInformation;
 import com.amul.dc.main.MainActivity;
 
@@ -26,7 +27,7 @@ import java.util.HashMap;
 public class LoginFragment extends Fragment {
 
     private Button btn_login;
-    private EditText edt_user_id, edt_pwd;
+    private EditText edt_email, edt_pwd;
     private LoginTask lat;
     private ProgressDialog progressDialog;
 
@@ -40,31 +41,28 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.lay_login, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         btn_login = (Button) view.findViewById(R.id.btn_login);
-        edt_user_id = (EditText) view.findViewById(R.id.edt_email);
+        edt_email = (EditText) view.findViewById(R.id.edt_email);
         edt_pwd = (EditText) view.findViewById(R.id.edt_pwd);
         btn_login.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                String email = edt_user_id.getText().toString().trim();
+                String email = edt_email.getText().toString().trim();
                 String pwd = edt_pwd.getText().toString().trim();
-                edt_user_id.setError(null);
+                edt_email.setError(null);
                 edt_pwd.setError(null);
                 if (email.equals("")) {
-
-                    edt_user_id.setError("Please enter user id");
+                    edt_email.setError("Please enter email id");
                 } else if (pwd.equals("")) {
-
                     edt_pwd.setError("Please enter password");
+                }else if (!email.equals("") && !isValidEmail(email)) {
+                    edt_email.setError("Please enter valid email id");
                 } else {
                     if (MainActivity.getNetworkHelper().isOnline()) {
                         HashMap<String, String> postDataParams = new HashMap<String, String>();
-                        postDataParams.put("email", edt_user_id.getText().toString().trim());
+                        postDataParams.put("email", edt_email.getText().toString().trim());
                         postDataParams.put("password", edt_pwd.getText().toString().trim());
-                        // new LoginTask(postDataParams).execute(Commons.LOGIN_URL);
-                        MainActivity.getMainScreenActivity().setSharPreferancename("", "",
-                                edt_user_id.getText().toString().trim(), true);
-                        MainActivity.getMainScreenActivity().onClick(MainActivity.getMainScreenActivity().tv_home);
+                        new LoginTask(postDataParams).execute(Commons.LOGIN_URL);
                     } else {
                         new ShowAlertInformation(getActivity()).showDialog("Network error", getString(R.string.offline));
                     }
@@ -85,7 +83,9 @@ public class LoginFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
-
+    public boolean isValidEmail(CharSequence target) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
     private class LoginTask extends AsyncProcess {
 
         public LoginTask(HashMap<String, String> postDataParams) {
@@ -110,21 +110,40 @@ public class LoginFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if (201 == responseCode) {
+            if (200 == responseCode) {
                 try {
-                    JSONObject jo = new JSONObject(result);
-                    String status = jo.getString("status");
-                    String message = jo.getString("message");
-                    if (status.equals("1")) {
-                        String User_ID = jo.getString("user_id");
-                        String act_user_id = jo.getString("act_user_id");
-                        MainActivity.getMainScreenActivity().setSharPreferancename(act_user_id, User_ID,
-                                edt_user_id.getText().toString().trim(), true);
-                        MainActivity.getMainScreenActivity().onClick(MainActivity.getMainScreenActivity().tv_home);
-
+                    JSONObject job = new JSONObject(result);
+                    String status = job.getString("status");
+                    if (status.equalsIgnoreCase("SUCCESS")) {
+//                        {
+//                            "status": "SUCCESS",
+//                                "userData": {
+//                            "id": 20,
+//                                    "email": "rajsharma0377@gmail.com",
+//                                    "first_name": "Chandra",
+//                                    "last_name": "Sharma",
+//                                    "role": "App",
+//                                    "phone": 9766146936,
+//                                    "permissions": [],
+//                            "activated": true,
+//                                    "activated_at": null,
+//                                    "last_login": "2017-09-07 11:45:22",
+//                                    "created_by": 1,
+//                                    "updated_by": 1,
+//                                    "updated_at": "2017-09-07 11:45:22",
+//                                    "created_at": "2017-09-07 11:38:08"
+//                        }
+//                        }
+                        JSONObject jo = job.getJSONObject("userData");
+                        String User_ID = jo.getString("id");
+                        String first_name = jo.getString("first_name");
+                        String last_name = jo.getString("last_name");
+                        MainActivity.getMainScreenActivity().setSharPreferancename(first_name+" "+last_name, User_ID,
+                                edt_email.getText().toString().trim(), true);
+                        MainActivity.getMainScreenActivity().selectTabs(true);
                     } else {
                         progressDialog.dismiss();
-                        new ShowAlertInformation(getActivity()).showDialog("Error", message);
+                        new ShowAlertInformation(getActivity()).showDialog("Error", "Login error");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
