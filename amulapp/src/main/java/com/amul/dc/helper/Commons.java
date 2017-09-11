@@ -17,6 +17,9 @@ public class Commons {
 	public static final String ADD_ROUTE = BASE_URL + "route/add";
 	public static final String ADD_DC_DETAILS = BASE_URL + "poi/add";
 	public static final String GET_ROUTE_DC_DETAILS = BASE_URL + "poi/route";
+	public static final String DELETE_ROUTE_DC_DETAILS = BASE_URL + "poi/del";
+
+	//http://13.126.111.240/public/api/poi/del
 
 	//http://13.126.111.240/public/api/poi/route
 

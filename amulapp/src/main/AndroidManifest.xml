@@ -34,6 +34,8 @@
             </intent-filter>
         </activity>
         <activity
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:name="com.amul.dc.main.MainActivity"
             android:screenOrientation="portrait" />
     </application>

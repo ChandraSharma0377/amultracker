@@ -64,10 +64,9 @@ public class LoginFragment extends Fragment {
                         postDataParams.put("password", edt_pwd.getText().toString().trim());
                         new LoginTask(postDataParams).execute(Commons.LOGIN_URL);
                     } else {
-                        new ShowAlertInformation(getActivity()).showDialog("Network error", getString(R.string.offline));
+                        ShowAlertInformation.showNetworkDialog(getActivity());
                     }
                 }
-
             }
         });
         return view;
@@ -143,18 +142,18 @@ public class LoginFragment extends Fragment {
                         MainActivity.getMainScreenActivity().selectTabs(true);
                     } else {
                         progressDialog.dismiss();
-                        new ShowAlertInformation(getActivity()).showDialog("Error", "Login error");
+                        ShowAlertInformation.showDialog(getActivity(),"Error", "Login error");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    new ShowAlertInformation(getActivity()).showDialog("Error", "No data found");
+                    ShowAlertInformation.showDialog(getActivity(),"Error", "No data found");
                     progressDialog.dismiss();
                 }
                 System.out.println("LoginTask result is : " + (result == null ? "" : result));
                 progressDialog.dismiss();
             } else {
                 Log.i("LoginTask response", result == null ? "" : result);
-                new ShowAlertInformation(getActivity()).showDialog("Error", "Error");
+                ShowAlertInformation.showDialog(getActivity(),"Error", "Error");
                 progressDialog.dismiss();
             }
 

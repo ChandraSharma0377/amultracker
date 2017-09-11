@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.amul.dc.R;
 import com.amul.dc.helper.Commons;
-import com.amul.dc.helper.ShowAlertInformation;
 import com.amul.dc.main.MainActivity;
 import com.amul.dc.pojos.CitiesDto;
 
@@ -24,27 +23,24 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class AuotCompleteAdapter extends BaseAdapter implements Filterable {
+public class CityAuotCompleteAdapter extends BaseAdapter implements Filterable {
 
     private static final int MAX_RESULTS = 10;
     private Context mContext;
     private List<CitiesDto> resultList = new ArrayList<CitiesDto>();
 
 
-    public AuotCompleteAdapter(Context context) {
+    public CityAuotCompleteAdapter(Context context) {
         mContext = context;
     }
 

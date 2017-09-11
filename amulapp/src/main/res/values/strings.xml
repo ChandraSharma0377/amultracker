@@ -1,10 +1,10 @@
 <resources>
 
-    <string name="app_name">Amul Tracker</string>
+    <string name="app_name">Amul Tracks</string>
 
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
-    <string name="login_title"> AMUL TRACKER</string>
+    <string name="login_title"> Amul Tracks</string>
     <string name="forgetpwd_title">FORGOT PASSWORD</string>
     
       <!-- Scan Asset -->
@@ -13,7 +13,7 @@
     <string name="scan_datetime">CAPTURE DATETIME</string>
     <string name="gps_coordinate">STORE GPS COORDINATE</string>
     <string name="comment">COMMENTS</string>
-   
+    <string name="networkerror">Network Error</string>
     <string name="offline">Network unavailable. Please connect your device to network.</string>
     <string name="about_the_app">About the App</string>
     <string name="scan_assest">Scan Assets</string>
@@ -40,5 +40,6 @@
     <string name="upload">Upload </string>
     <string name="all_transactions">All added stores</string>
     <string name="add_new_dc">Add New DC\'s</string>
+    <string name="empty_list">Nothing to show</string>
 
 </resources>

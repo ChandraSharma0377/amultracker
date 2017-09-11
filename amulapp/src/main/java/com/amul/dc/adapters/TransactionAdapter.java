@@ -2,9 +2,6 @@ package com.amul.dc.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +13,6 @@ import com.amul.dc.R;
 import com.amul.dc.pojos.TransactionBeans;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 
@@ -52,7 +48,7 @@ public class TransactionAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            convertView = inflater.inflate(R.layout.list_item_dcs, null);
+            convertView = inflater.inflate(R.layout.list_item_dcs, parent,false);
             holder = new ViewHolder();
             holder.tvheader = (TextView) convertView.findViewById(R.id.tvheader);
             holder.tvsubheader = (TextView) convertView.findViewById(R.id.tvsubheader);
@@ -64,7 +60,7 @@ public class TransactionAdapter extends BaseAdapter {
         }
         holder.tvheader.setText(arraylist.get(position).getStoreName());
         holder.tvsubheader.setText(arraylist.get(position).getStoreLocation());
-        Picasso.with(context).load(arraylist.get(position).getImageUrl()).placeholder(R.drawable.placeholder).resize(140, 140).into(holder.ivthumb);
+        Picasso.with(context).load(arraylist.get(position).getImageUrl()).placeholder(R.drawable.placeholder).resize(180, 180).into(holder.ivthumb);
         return convertView;
     }
 

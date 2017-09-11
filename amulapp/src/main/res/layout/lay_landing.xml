@@ -5,12 +5,11 @@
     android:layout_height="fill_parent"
     android:layout_gravity="center"
     android:background="@android:color/transparent"
-
     android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/lay_scan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,26 +18,60 @@
         android:paddingTop="10dp">
 
         <RelativeLayout
+            android:id="@+id/first_spin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="@dimen/select_padding"
             android:layout_marginRight="10dp">
 
-            <AutoCompleteTextView
-                android:id="@+id/tv_autoCompleteCity"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/iv_add_city"
-                android:background="@drawable/edt_white_bg"
-                android:hint="Search City"
-                android:maxLength="50"
-                android:maxLines="1"
-                android:paddingLeft="5dp">
+            <!--<AutoCompleteTextView-->
+            <!--android:id="@+id/tv_autoCompleteCity"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_toLeftOf="@+id/iv_add_city"-->
+            <!--android:background="@drawable/edt_white_bg"-->
+            <!--android:hint="Search City"-->
+            <!--android:maxLength="50"-->
+            <!--android:maxLines="1"-->
+            <!--android:paddingLeft="5dp">-->
 
-            </AutoCompleteTextView>
+            <!--</AutoCompleteTextView>-->
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/iv_add_city">
+
+                <com.amul.dc.helper.DelayAutoCompleteTextView
+
+
+                    android:id="@+id/tv_autoCompleteCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/iv_add_city"
+                    android:background="@drawable/edt_white_bg"
+                    android:hint="Search City"
+                    android:imeOptions="flagNoExtractUi|actionSearch"
+                    android:inputType="textCapSentences"
+                    android:maxLength="50"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp" />
+
+                <ProgressBar
+                    android:id="@+id/loading_indicator_city"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone" />
+            </FrameLayout>
 
             <ImageView
                 android:id="@+id/iv_add_city"
@@ -49,27 +82,60 @@
 
                 android:background="@drawable/add_square_40" />
         </RelativeLayout>
+
         <RelativeLayout
+            android:id="@+id/second_spin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/first_spin"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="@dimen/select_padding"
             android:layout_marginRight="10dp">
 
-            <AutoCompleteTextView
-                android:id="@+id/tv_autoCompleteRoute"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/iv_add_route"
-                android:background="@drawable/edt_white_bg"
-                android:hint="Search Route"
-                android:maxLength="50"
-                android:maxLines="1"
-                android:paddingLeft="5dp">
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/iv_add_route">
+                <!--<AutoCompleteTextView-->
+                <!--android:id="@+id/tv_autoCompleteRoute"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_toLeftOf="@+id/iv_add_route"-->
+                <!--android:background="@drawable/edt_white_bg"-->
+                <!--android:hint="Search Route"-->
+                <!--android:maxLength="50"-->
+                <!--android:maxLines="1"-->
+                <!--android:paddingLeft="5dp">-->
 
-            </AutoCompleteTextView>
+                <!--</AutoCompleteTextView>-->
+                <com.amul.dc.helper.DelayAutoCompleteTextView
+
+
+                    android:id="@+id/tv_autoCompleteRoute"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/iv_add_route"
+                    android:background="@drawable/edt_white_bg"
+                    android:hint="Search Route"
+                    android:imeOptions="flagNoExtractUi|actionSearch"
+                    android:inputType="textCapSentences"
+                    android:maxLength="50"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp" />
+
+                <ProgressBar
+                    android:id="@+id/loading_indicator_route"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone" />
+            </FrameLayout>
 
             <ImageView
                 android:id="@+id/iv_add_route"
@@ -79,31 +145,12 @@
                 android:layout_marginLeft="2dp"
                 android:background="@drawable/add_square_40" />
         </RelativeLayout>
-        <Spinner
-            android:id="@+id/sp_cities"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="@dimen/select_padding"
-            android:layout_marginRight="@dimen/select_padding"
-            android:visibility="gone"
-            android:background="@drawable/spinner_bg" />
-
-        <Spinner
-            android:id="@+id/sp_route"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_alignParentTop="true"
-            android:visibility="gone"
-            android:layout_marginLeft="@dimen/select_padding"
-            android:layout_marginRight="@dimen/select_padding"
-            android:background="@drawable/spinner_bg" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/second_spin"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="4dp"
@@ -161,8 +208,10 @@
                     android:id="@+id/list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:layout_below="@+id/tv_list_title" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

@@ -16,18 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amul.dc.R;
-import com.amul.dc.adapters.AuotCompleteAdapter;
+import com.amul.dc.adapters.CityAuotCompleteAdapter;
 import com.amul.dc.adapters.RouteAutoCompleteAdapter;
-import com.amul.dc.adapters.SpinAdapter;
 import com.amul.dc.adapters.TransactionAdapter;
 import com.amul.dc.asynctask.AsyncProcess;
-import com.amul.dc.db.DataHelperClass;
 import com.amul.dc.helper.Commons;
+import com.amul.dc.helper.DelayAutoCompleteTextView;
 import com.amul.dc.helper.ShowAlertInformation;
 import com.amul.dc.main.MainActivity;
 import com.amul.dc.pojos.CitiesDto;
@@ -42,51 +39,51 @@ import java.util.HashMap;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
     private final String TAG = HomeFragment.class.getSimpleName();
-    private Spinner sp_cities, sp_route;
-    private ArrayList<String> routeList = new ArrayList<String>();
-    private ArrayList<String> citiesList = new ArrayList<String>();
     private ListView list_view;
     private ImageView iv_add_dc, iv_add_city,iv_add_route;
     private TransactionAdapter transactionAdapter;
     private ArrayList<TransactionBeans> arraylist = new ArrayList<TransactionBeans>();
-    private AutoCompleteTextView tv_autoCompleteCity,tv_autoCompleteRoute;
+    private DelayAutoCompleteTextView tv_autoCompleteCity,tv_autoCompleteRoute;
     private String error="";
     public static CitiesDto citiesDto = null;
     public static RoutesDto routesDto = null;
-
+   // private ViewGroup  footer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle args) {
 
         View view = inflater.inflate(R.layout.lay_landing, container, false);
         list_view = (ListView) view.findViewById(R.id.list_view);
-        sp_cities = (Spinner) view.findViewById(R.id.sp_cities);
-        sp_route = (Spinner) view.findViewById(R.id.sp_route);
         iv_add_dc = (ImageView) view.findViewById(R.id.iv_add_dc);
         iv_add_city = (ImageView) view.findViewById(R.id.iv_add_city);
         iv_add_route = (ImageView) view.findViewById(R.id.iv_add_route);
-        sp_route.setEnabled(false);
         iv_add_dc.setOnClickListener(this);
         iv_add_city.setOnClickListener(this);
         iv_add_route.setOnClickListener(this);
-        initSpinners();
 
-        tv_autoCompleteCity = (AutoCompleteTextView) view.findViewById(R.id.tv_autoCompleteCity);
+        tv_autoCompleteCity = (DelayAutoCompleteTextView) view.findViewById(R.id.tv_autoCompleteCity);
         tv_autoCompleteCity.setThreshold(3);
-        tv_autoCompleteCity.setAdapter(new AuotCompleteAdapter(getActivity()));
+        tv_autoCompleteCity.setAdapter(new CityAuotCompleteAdapter(getActivity()));
+        tv_autoCompleteCity.setLoadingIndicator(
+                (android.widget.ProgressBar) view.findViewById(R.id.loading_indicator_city));
         tv_autoCompleteCity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 citiesDto = (CitiesDto) adapterView.getItemAtPosition(position);
                 tv_autoCompleteCity.setText(citiesDto.getCityName());
                 MainActivity.getMainScreenActivity().setPrefCityDto(citiesDto);
+                routesDto = null;
+                tv_autoCompleteRoute.setText("");
+                MainActivity.getMainScreenActivity().setPrefRouteDto(routesDto);
                 setListData();
             }
         });
 
-        tv_autoCompleteRoute = (AutoCompleteTextView) view.findViewById(R.id.tv_autoCompleteRoute);
+        tv_autoCompleteRoute = (DelayAutoCompleteTextView) view.findViewById(R.id.tv_autoCompleteRoute);
         tv_autoCompleteRoute.setThreshold(3);
         tv_autoCompleteRoute.setAdapter(new RouteAutoCompleteAdapter(getActivity()));
+        tv_autoCompleteRoute.setLoadingIndicator(
+                (android.widget.ProgressBar) view.findViewById(R.id.loading_indicator_route));
         tv_autoCompleteRoute.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -104,80 +101,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if(null != routesDto){
             tv_autoCompleteRoute.setText(routesDto.getRouteName());
         }
+//        footer = (ViewGroup) inflater.inflate(R.layout.empty_list, list_view, false);
+//        transactionAdapter = new TransactionAdapter(getActivity(), arraylist);
+//        list_view.setAdapter(transactionAdapter);
+//        list_view.addFooterView(footer, null, false);
         setListData();
-
-
-        sp_route.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView selectedText = (TextView) parent.getChildAt(0);
-                if (selectedText != null) {
-                    //selectedText.setTextColor(Color.WHITE);
-                }
-                if (position > 0) {
-
-                } else {
-                    //Toast.makeText(getActivity(),"Please select city first",Toast.LENGTH_LONG).show();
-                }
-
-            }
-
-        });
-        sp_cities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView selectedText = (TextView) parent.getChildAt(0);
-                if (selectedText != null) {
-                    //selectedText.setTextColor(Color.WHITE);
-                }
-                if (position > 0) {
-
-                    sp_route.setEnabled(true);
-
-                } else {
-                    sp_route.setEnabled(false);
-
-
-                }
-
-            }
-
-        });
         return view;
     }
-
-    private void initSpinners() {
-        citiesList.clear();
-        routeList.clear();
-        citiesList.add("Select City");
-        citiesList.add("Ahemdabad");
-        citiesList.add("Ahmednagar");
-        citiesList.add("Gandhinagar");
-        citiesList.add("Surat");
-
-        routeList.add("Select Route");
-        routeList.add("Route Ahemdabad");
-        routeList.add("Route Ahmednagar");
-        routeList.add("Route Gandhinagar");
-        routeList.add("Route Surat");
-        SpinAdapter cityAdapter = new SpinAdapter(getActivity(), citiesList);
-        sp_cities.setAdapter(cityAdapter);
-        SpinAdapter routeAdapter = new SpinAdapter(getActivity(), routeList);
-        sp_route.setAdapter(routeAdapter);
-    }
-
 
     private void setListData() {
         if(null != routesDto && null != citiesDto) {
@@ -188,8 +118,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 postDataParams.put("user_id", MainActivity.getMainScreenActivity().getUserID());
                 new GetAllDCsAsync(postDataParams).execute(Commons.GET_ROUTE_DC_DETAILS);
             } else {
-                new ShowAlertInformation(getActivity()).showDialog("Network error", getActivity().getString(R.string.offline));
+                ShowAlertInformation.showNetworkDialog(getActivity());
             }
+        }else{
+            arraylist.clear();
+            transactionAdapter = new TransactionAdapter(getActivity(), arraylist);
+            list_view.setAdapter(transactionAdapter);
         }
     }
 
@@ -197,7 +131,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
 
         super.onResume();
-        MainActivity.getMainScreenActivity().actionBarTitle.setText("AMUL TRACKER");
+        MainActivity.getMainScreenActivity().actionBarTitle.setText(getString(R.string.app_name));
         if (MainActivity.getMainScreenActivity().checkLocationPermissionAllowed())
             MainActivity.getMainScreenActivity().getLocation();
         MainActivity.getMainScreenActivity().showHideBottomLay(true);
@@ -218,17 +152,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             case R.id.iv_add_dc:
                 if (tv_autoCompleteCity.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please select city first", Toast.LENGTH_LONG).show();
-                } else if (!tv_autoCompleteCity.getText().toString().equals(citiesDto.getCityName())) {
+                } else if (null == citiesDto || !tv_autoCompleteCity.getText().toString().equals(citiesDto.getCityName())) {
                     Toast.makeText(getActivity(), "Please select valid city", Toast.LENGTH_LONG).show();
                 } else if (tv_autoCompleteRoute.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please select route first", Toast.LENGTH_LONG).show();
-                } else if (!tv_autoCompleteRoute.getText().toString().equals(routesDto.getRouteName())) {
+                } else if (null == routesDto || !tv_autoCompleteRoute.getText().toString().equals(routesDto.getRouteName())) {
                     Toast.makeText(getActivity(), "Please select valid route", Toast.LENGTH_LONG).show();
                 } else {
                     MainActivity.getMainScreenActivity().replaceFragmentWithBackStack(getActivity(),
                             new DcDetailsFragment(), TAG, MainActivity.tabHome);
                 }
-
                 break;
             case R.id.iv_add_city:
                 createAddCityDia(getActivity(),true);
@@ -294,7 +227,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         }
                         mAlertDialog.dismiss();
                     } else {
-                        new ShowAlertInformation(mContext).showDialog("Network error", mContext.getString(R.string.offline));
+                        ShowAlertInformation.showNetworkDialog(getActivity());
                     }
                 }
             }
@@ -369,17 +302,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                     } else {
-                        new ShowAlertInformation(getActivity()).showDialog("Error", "Failed to update.");
+                         ShowAlertInformation.showDialog(getActivity(),"Error", "Failed to update.");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    new ShowAlertInformation(getActivity()).showDialog("Error", "Failed to update.");
+                    ShowAlertInformation.showDialog(getActivity(),"Error", "Failed to update.");
                 }
                 System.out.println("AddCityAndRouteAsync result is : " + (result == null ? "" : result));
 
             } else {
                 Log.i("AddCityAndRouteAsync", result == null ? "" : result);
-                new ShowAlertInformation(getActivity()).showDialog("Error", "Error");
+                ShowAlertInformation.showDialog(getActivity(),"Error", "Error");
             }
             progressDialog.dismiss();
         }
@@ -429,7 +362,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 for (int i = 0; i< jo.length();i++){
                                     JSONObject jobj = jo.getJSONObject(i);
                                     TransactionBeans transactionBeans = new TransactionBeans();
-                                   // transactionBeans.setUniqueId(cursor.getInt(0));
+                                    transactionBeans.setUniqueId(Integer.parseInt(jobj.getString("poi_id")));
                                     transactionBeans.setStoreName(jobj.getString("poi_name"));
                                     transactionBeans.setStoreLocation(jobj.getString("poi_details"));
                                     transactionBeans.setScandatetime(jobj.getString("created_at"));
@@ -453,22 +386,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                             new DcDetailsFragment(arraylist.get(position)), TAG, MainActivity.tabHome);
                                 }
                             });
-
+//                            if (arraylist.size() == 0 && list_view.getFooterViewsCount() == 0) {
+//                                //footer.setVisibility(View.VISIBLE);
+//                                list_view.addFooterView(footer, null, false);
+//                            } else if (arraylist.size() > 0) {
+//                                list_view.removeFooterView(footer);
+//                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     } else {
-                        new ShowAlertInformation(getActivity()).showDialog("Error", "Failed to update.");
+                        ShowAlertInformation.showDialog(getActivity(),"Error", "Failed to update.");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    new ShowAlertInformation(getActivity()).showDialog("Error", "Failed to update.");
+                    ShowAlertInformation.showDialog(getActivity(),"Error", "Failed to update.");
                 }
                 System.out.println("AddCityAndRouteAsync result is : " + (result == null ? "" : result));
 
             } else {
                 Log.i("AddCityAndRouteAsync", result == null ? "" : result);
-                new ShowAlertInformation(getActivity()).showDialog("Error", "Error");
+                ShowAlertInformation.showDialog(getActivity(),"Error", "Error");
             }
             progressDialog.dismiss();
         }

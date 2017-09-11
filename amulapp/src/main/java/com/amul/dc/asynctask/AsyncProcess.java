@@ -2,6 +2,8 @@ package com.amul.dc.asynctask;
 
 import android.os.AsyncTask;
 
+import com.amul.dc.helper.Commons;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -55,7 +57,7 @@ public class AsyncProcess extends AsyncTask<String, Void, String> {
 			OutputStream os = conn.getOutputStream();
 			BufferedWriter writer = new BufferedWriter(
 					new OutputStreamWriter(os, "UTF-8"));
-			writer.write(getPostDataString(postDataParams));
+			writer.write(Commons.getPostDataString(postDataParams));
 
 			writer.flush();
 			writer.close();
@@ -87,20 +89,4 @@ public class AsyncProcess extends AsyncTask<String, Void, String> {
 		return response.toString();
 	}
 
-	private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
-		StringBuilder result = new StringBuilder();
-		boolean first = true;
-		for (Map.Entry<String, String> entry : params.entrySet()) {
-			if (first)
-				first = false;
-			else
-				result.append("&");
-
-			result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-			result.append("=");
-			result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-		}
-
-		return result.toString();
-	}
 }

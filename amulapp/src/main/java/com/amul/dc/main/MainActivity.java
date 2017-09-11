@@ -271,8 +271,13 @@ public class MainActivity extends ActionBarActivity  {
 
     public void setPrefRouteDto(RoutesDto routesDto){
         Editor editor = sharedpreferences.edit();
-        editor.putString(KEY_ROUTE_ID, routesDto.getRouteId());
-        editor.putString(KEY_ROUTE_NAME, routesDto.getRouteName());
+        if(null != routesDto) {
+            editor.putString(KEY_ROUTE_ID, routesDto.getRouteId());
+            editor.putString(KEY_ROUTE_NAME, routesDto.getRouteName());
+        }else{
+            editor.putString(KEY_ROUTE_ID, "");
+            editor.putString(KEY_ROUTE_NAME, "");
+        }
         editor.commit();
     }
 

@@ -9,19 +9,19 @@ import com.amul.dc.R;
 
 public class ShowAlertInformation {
 
-	private Context context;
 
-	public ShowAlertInformation(Context context) {
-		this.context = context;
+
+
+	public static void showNetworkDialog(Context context) {
+		showDialog(context, context.getString(R.string.networkerror), context.getString(R.string.offline));
 	}
-
-	public void showDialog(String title, String message) {
+	public static void showDialog(Context context ,String title, String message) {
 
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 		alertDialog.setTitle(title);
 		alertDialog.setCancelable(false);
 		alertDialog.setMessage(message);
-		alertDialog.setIcon(R.drawable.ic_launcher);
+		alertDialog.setIcon(R.drawable.launcher);
 		alertDialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 
@@ -32,13 +32,13 @@ public class ShowAlertInformation {
 		alertDialog.show();
 	}
 
-	public void showDialog(String Title, String Message, OnClickListener positiveListner) {
+	public static void showDialog(Context context ,String Title, String Message, OnClickListener positiveListner) {
 
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 		alertDialog.setTitle(Title);
 		alertDialog.setMessage(Message);
 		alertDialog.setCancelable(false);
-		alertDialog.setIcon(R.drawable.ic_launcher);
+		alertDialog.setIcon(R.drawable.launcher);
 		alertDialog.setNegativeButton("OK", positiveListner);
 		alertDialog.show();
 	}
